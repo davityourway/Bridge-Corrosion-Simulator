@@ -1,0 +1,35 @@
+{
+  "cover_mean": 2.5,
+  "cover_stdev": 0.2,
+  "cover_trunc_low": 1.1,
+  "cover_trunc_high": 10,
+  "diff_mean": 0.005,
+  "diff_stdev": 0.002,
+  "diff_trunc_low":  0.002,
+  "diff_trunc_high": 0.1,
+  "cl_thresh_mean": 2.6,
+  "cl_thresh_stdev": 1.3,
+  "cl_thresh_trunc_low": 1,
+  "cl_thresh_trunc_high": 20,
+  "cl_conc_mean": 25,
+  "cl_conc_stdev": 10,
+  "cl_conc_trunc_low": 10,
+  "cl_conc_trunc_high": 60,
+  "prop_time_mean": 24,
+  "prop_time_stdev": 12,
+  "prop_time_trunc_low": 10,
+  "prop_time_trunc_high": 60,
+  "nitrite_conc": 0,
+  "shape": "Rectangle",
+  "width1": 10,
+  "width2": 10,
+  "height": 40,
+  "corner_diff_boost": 0.003,
+  "crack_rate": 0.05,
+  "crack_diff": 0.002,
+  "pylons": 12,
+  "simulation_time": 100
+
+
+}
+
