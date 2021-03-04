@@ -4,11 +4,17 @@ import numpy
 import matplotlib.pyplot as plt
 from typing import Dict, Tuple
 from scipy import special
+from flask import Flask
 
 #TO DO
 # Corrosion chart
 # Maintenance Flag
 # Time step
+app = Flask(__name__)
+
+@app.route('/')
+def hello_world():
+    return 'Hello, World!'
 
 
 def run_simulation(params_json: str) -> 'Bridge':
