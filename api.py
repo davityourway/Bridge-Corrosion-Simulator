@@ -7,7 +7,7 @@ from scipy import special
 from flask import Flask
 
 #TO DO
-# Corrosion chart
+# Corrosion chartp
 # Maintenance Flag
 # Time step
 app = Flask(__name__)
