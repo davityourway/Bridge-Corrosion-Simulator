@@ -54,7 +54,7 @@ class Bridge:
         if param == 'diff':
             self.apply_diff_boost(params, full_mat)
             self.distribute_cracks(params, full_mat)
-        self.truncate_values(params, param, full_mat)
+        full_mat = self.truncate_values(params, param, full_mat)
         return full_mat
 
     def distribute_cracks(self, params, diff_mat: numpy.array):
@@ -77,6 +77,7 @@ class Bridge:
     def truncate_values(self, params: Dict, param: str, full_mat: numpy.array):
         full_mat = numpy.maximum(full_mat, params[param+'_trunc_low'])
         full_mat = numpy.minimum(full_mat, params[param+'_trunc_high'])
+        return full_mat
 
     def get_matrix_shape(self, params: Dict) -> Tuple[int, int, int]:
         if params['shape'] == 'Rectangle':
@@ -96,6 +97,7 @@ class Bridge:
     def get_corroded_sections(self, time: int):
         corroded = []
         times = []
+        print(self.corr_time)
         for i in range(time):
             corroded.append(numpy.count_nonzero(self.corr_time < i))
             times.append(i)
