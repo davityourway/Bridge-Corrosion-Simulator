@@ -1,32 +1,26 @@
 import React from 'react';
-import './App.css';
-import { useForm } from 'react-hook-form';
+import {useForm} from 'react-hook-form';
+import {doFetch} from "./ApiClient";
+import {Form} from "./components/Form";
 
-function App() {
-  const { register, handleSubmit } = useForm();
+const App = () => {
+    const {register, handleSubmit} = useForm();
 
-  const onSubmit = (data: any) => alert(JSON.stringify(data));
+    const onSubmit = async (data: any) => await doFetch('/corrode', {
+        corner_diff_boost: 0.003,
+        circle_diff_boost: 0.8,
+        crack_rate: 0.05,
+        crack_diff: 0.002,
+        ...data
+    })
 
-  return <div className="App">
-    <header className="App-header">
-      <p>Bridge Corrosion Simulator</p>
-      <form onSubmit={ handleSubmit(onSubmit)}>
-        <label>Pylon shape: <select ref={ register }>
-          <option>Rectangle</option>
-          <option>Circle</option>
-        </select></label>
-        <label>Cover: <input ref={ register }/></label>
-        <label>Diff: <input ref={ register }/></label>
-        <label>CL threshold: <input ref={ register }/></label>
-        <label>CL concentration: <input ref={ register }/></label>
-        <label>Propagation time: <input ref={ register }/></label>
-        <label>Nitrite concentration: <input ref={ register }/></label>
-        <label>Simulation time: <input ref={ register }/></label>
-        <label>Height: <input ref={ register }/></label>
-        <label>Radius: <input ref={ register }/></label>
-      </form>
-    </header>
-  </div>;
-}
+    return <main>
+        <header>
+            <h1>Bridge Corrosion Simulator</h1>
+            <h2>Parameters</h2>
+            <Form onSubmit={handleSubmit(onSubmit)} register={register}/>
+        </header>
+    </main>;
+};
 
 export default App;
