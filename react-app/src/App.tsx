@@ -23,13 +23,12 @@ const App = () => {
 
     return <main>
         <header>
-            <h1>Bridge Corrosion Simulator</h1>
+            <h2>Bridge Corrosion Simulator</h2>
         </header>
-        <h2>Parameters</h2>
         <Form onSubmit={handleSubmit(onSubmit)} register={register}/>
         <br/>
         {result && <data>
-            <LineChart width={500} height={250} data={data}
+            <LineChart width={500} height={200} data={data}
                        margin={{top: 5, right: 30, left: 20, bottom: 5}}>
                 <XAxis dataKey="name"/>
                 <Line type="monotone" dataKey={"amt"} stroke="#8884d8" dot={false}/>
