@@ -32,7 +32,7 @@ const App = () => {
             <LineChart width={500} height={250} data={data}
                        margin={{top: 5, right: 30, left: 20, bottom: 5}}>
                 <XAxis dataKey="name"/>
-                <Line type="monotone" dataKey={"amt"} stroke="#8884d8"/>
+                <Line type="monotone" dataKey={"amt"} stroke="#8884d8" dot={false}/>
                 <YAxis/>
                 <Tooltip/>
             </LineChart>
