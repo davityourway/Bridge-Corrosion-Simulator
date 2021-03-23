@@ -11,5 +11,5 @@ export const doFetch = async (path: string, body?: any) => {
         const responseBody = await response.json();
         console.log(responseBody);
     }
-    return response;
+    return response.json();
 };
