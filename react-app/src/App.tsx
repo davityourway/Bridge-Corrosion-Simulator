@@ -27,7 +27,7 @@ const App = () => {
         </header>
         <Form onSubmit={handleSubmit(onSubmit)} register={register}/>
         <br/>
-        {result && <data>
+        {result[0] && <data>
             <LineChart width={500} height={200} data={data}
                        margin={{top: 5, right: 30, left: 20, bottom: 5}}>
                 <XAxis dataKey="name"/>
