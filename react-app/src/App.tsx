@@ -1,12 +1,16 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {useForm} from 'react-hook-form';
 import {doFetch} from "./ApiClient";
 import {Form} from "./components/Form";
-import {Line, LineChart, Tooltip, XAxis, YAxis} from 'recharts'
+import {Chart} from "./components/Chart";
 
 const App = () => {
     const {register, handleSubmit} = useForm();
-    const [result, setResult] = useState<number[][]>([]);
+    const [result, setResult] = useState<number[][]>([[]]);
+    const [data, setData] = useState<{ year: number; elements: number }[]>([]);
+
+    useEffect(() =>
+        setData(result[0].map((el: number, i: number) => ({year: result[1][i], elements: el}))), [result])
 
     const onSubmit = async (data: any) => setResult(await doFetch('/corrode', {
         corner_diff_boost: 0.003,
@@ -16,26 +20,14 @@ const App = () => {
         ...data
     }))
 
-    const data = React.useMemo(() =>
-            (result[0] || []).map((el: number, i: number,) => ({name: result[1][i], amt: el})),
-        [result]
-    );
-
     return <main>
         <header>
             <h2>Bridge Corrosion Simulator</h2>
+            <small>By using this, you agree to not sue us about your bridge.</small>
         </header>
         <Form onSubmit={handleSubmit(onSubmit)} register={register}/>
         <br/>
-        {result[0] && <data>
-            <LineChart width={500} height={200} data={data}
-                       margin={{top: 5, right: 30, left: 20, bottom: 5}}>
-                <XAxis dataKey="name"/>
-                <Line type="monotone" dataKey={"amt"} stroke="#8884d8" dot={false}/>
-                <YAxis/>
-                <Tooltip/>
-            </LineChart>
-        </data>}
+        {result[0] && <Chart data={data}/>}
     </main>;
 };
 
