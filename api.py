@@ -90,10 +90,10 @@ class Bridge:
     def get_matrix_shape(self, params: Dict) -> Tuple[int, int, int]:
         if params['shape'] == 'Rectangle':
             vert_elem = int(params['height'])
-            hor_elem = 2 * (int(params['width1']) + int(params['width2']))
+            hor_elem = int(2 * (float(params['width1']) + float(params['width2'])))
         elif params['shape'] == 'Circle':
             vert_elem = int(params['height'])
-            hor_elem = 2 * math.pi * int(params['radius'])
+            hor_elem = int(2 * math.pi * float(params['radius']))
         else:
             print("Error: Shape not valid")
             raise
