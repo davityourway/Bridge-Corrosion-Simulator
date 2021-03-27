@@ -18,7 +18,6 @@ CORS(app)
 
 @app.route('/api/corrode', methods=['POST'])
 def corrode():
-    print(request.json)
     bridge = Bridge(request.json)
     return json.dumps(bridge.get_corroded_sections(bridge.sim_time))
 
@@ -41,8 +40,8 @@ class Bridge:
         self.prop_time = self.populate_matrix(params, 'prop_time')
         self.nitrite_conc = float(params['nitrite_conc'])
         self.corr_time = self.generate_corrosion_matrix()
-        self.sim_time = int(params['simulation_time'])
-        self.needs_maintenance = [False for col in range(self.mat_shape[0])]
+        self.sim_time = int(params['simulation_time']) + 1
+        self.needs_maintenance = [False for _ in range(self.mat_shape[0])]
 
     def generate_corrosion_matrix(self):
         if self.nitrite_conc == 0:
