@@ -16,9 +16,9 @@ export const Form: React.FC<FormProps> = props => {
     return <form onSubmit={props.onSubmit}>
         <table>
             <tbody>
-            <Input fieldName={"simulation_time"} label={"Simulation time"} register={props.register}/>
+            <Input fieldName={"simulation_time"} label={"Simulation time (years)"} register={props.register}/>
             <Input fieldName={"pylons"} label={"Number of pylons"} register={props.register}/>
-            <Input fieldName={"height"} label={"Corrosion zone height"} register={props.register}/>
+            <Input fieldName={"height"} label={"Corrosion zone height (in.)"} register={props.register}/>
             <tr>
                 <td><label>Pylon shape: </label></td>
                 <td><select name={"shape"} value={pylonShape} ref={props.register} onChange={event => {
@@ -29,11 +29,11 @@ export const Form: React.FC<FormProps> = props => {
                 </select></td>
             </tr>
             {pylonShape === PylonShape.CIRCLE &&
-            <Input fieldName={"radius"} label={"Radius"} register={props.register}/>
+            <Input fieldName={"radius"} label={"Radius (in.)"} register={props.register}/>
             }
             {pylonShape === PylonShape.RECTANGLE && <>
-                <Input label={"Width"} fieldName={"width1"} register={props.register}/>
-                <Input label={"Length"} fieldName={"width2"} register={props.register}/>
+                <Input label={"Width (in.)"} fieldName={"width1"} register={props.register}/>
+                <Input label={"Length (in.)"} fieldName={"width2"} register={props.register}/>
             </>}
             <Input label={"Nitrite concentration"} fieldName={"nitrite_conc"} register={props.register}/>
             <tr>
@@ -47,7 +47,7 @@ export const Form: React.FC<FormProps> = props => {
             <PropertyInput label={"Diffusivity"} fieldName={"diff"} register={props.register}/>
             <PropertyInput label={"CL threshold concentration"} fieldName={"cl_thresh"} register={props.register}/>
             <PropertyInput label={"CL surface concentration"} fieldName={"cl_conc"} register={props.register}/>
-            <PropertyInput label={"Propagation time"} fieldName={"prop_time"} register={props.register}/>
+            <PropertyInput label={"Propagation time (years)"} fieldName={"prop_time"} register={props.register}/>
             </tbody>
         </table>
         <input type={"submit"} value={"Corrode!"}/>
