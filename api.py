@@ -1,6 +1,7 @@
 import json
 import math
 import numpy
+import itertools
 import matplotlib.pyplot as plt
 from typing import Dict, Tuple
 from scipy import special
@@ -41,7 +42,9 @@ class Bridge:
         self.nitrite_conc = float(params['nitrite_conc'])
         self.corr_time = self.generate_corrosion_matrix()
         self.sim_time = int(params['simulation_time']) + 1
+        self.halo_effect = params['halo_effect']
         self.needs_maintenance = [False for _ in range(self.mat_shape[0])]
+        self.apply_halo_effect()
 
     def generate_corrosion_matrix(self):
         if self.nitrite_conc == 0:
@@ -116,6 +119,21 @@ class Bridge:
         plt.xlabel('Time (years)')
         plt.ylabel('Number of elements showing spalls')
         plt.show()
+
+    def apply_halo_effect(self):
+        directions = [-1, 0, 1]
+        directions = set(itertools.product(directions, directions))
+        directions.remove((0,0))
+        for t in range(self.sim_time):
+            corroded = numpy.where(self.corr_time == t)
+            corroded = [(corroded[0][i], corroded[1][i], corroded[2][i]) for i in range(len(corroded[0]))]
+            for pos in corroded:
+                for dir in directions:
+                    i = pos[1] + dir[0]
+                    j = pos[2] + dir[1] if self.pylon_shape == 'Slab' else (pos[2] + dir[1]) % len(self.cl_thresh[0,0,0])-1
+                    if 0 <= i < len(self.cl_thresh[0, 0]) and 0 <= j < len(self.cl_thresh[0, 0, 0]) and self.corr_time[pos[0], i, j] > t:
+                        self.cl_thresh[pos[0], i, j] = self.cl_thresh[pos[0], i, j] + self.halo_effect
+            self.corr_time = self.generate_corrosion_matrix()
 
 
 if __name__ == '__main__':
