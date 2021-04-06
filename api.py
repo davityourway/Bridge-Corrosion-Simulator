@@ -45,7 +45,7 @@ class Bridge:
         self.sim_time = int(params['simulation_time']) + 1
         self.halo_effect = params['halo_effect']
         self.needs_maintenance = [False for _ in range(self.mat_shape[0])]
-        self.apply_halo_effect()
+        # self.apply_halo_effect()
 
     def generate_corrosion_matrix(self):
         if self.nitrite_conc == 0:
@@ -79,7 +79,7 @@ class Bridge:
             sections = perimeter // 4
             corners = [x * sections for x in range(4)]
             for i in range(4):
-                diff_mat[:, :, corners] *= float(params['corner_diff_boost'])
+                diff_mat[:, :, corners[i]] *= float(params['corner_diff_boost'])
         elif params['shape'] == 'Circle':
             diff_mat *= float(params['circle_diff_boost'])
         else:
