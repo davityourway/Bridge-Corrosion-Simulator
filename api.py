@@ -96,15 +96,13 @@ class Bridge:
 
     def get_matrix_shape(self, params: Dict) -> Tuple[int, int, int]:
         if params['shape'] == 'Rectangle':
-            vert_elem = int(params['height'])
             hor_elem = int(2 * (float(params['width1']) + float(params['width2'])))
         elif params['shape'] == 'Circle':
-            vert_elem = int(params['height'])
             hor_elem = int(2 * math.pi * float(params['radius']))
         else:
             print("Error: Shape not valid")
             raise
-        return int(params['pylons']), vert_elem, hor_elem
+        return int(params['pylons']), int(params['height']), hor_elem
 
     def get_element_matrix(self, elements: Tuple[int, int, int]) -> numpy.array:
         return numpy.random.normal(0, 1, elements)
