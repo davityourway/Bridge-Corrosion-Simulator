@@ -2,6 +2,7 @@ import json
 import math
 import numpy
 import itertools
+import pandas as pd
 import matplotlib.pyplot as plt
 from typing import Dict, Tuple
 from scipy import special
@@ -107,7 +108,6 @@ class Bridge:
     def get_corroded_sections(self, time: int):
         corroded = []
         times = []
-        print(self.corr_time)
         for i in range(time):
             corroded.append(numpy.count_nonzero(self.corr_time < i))
             times.append(i)
@@ -123,16 +123,21 @@ class Bridge:
     def apply_halo_effect(self):
         directions = [-1, 0, 1]
         directions = set(itertools.product(directions, directions))
-        directions.remove((0,0))
-        for t in range(self.sim_time):
-            corroded = numpy.where(self.corr_time == t)
+        directions.remove((0, 0))
+        for t in range(1, self.sim_time):
+            corroded = numpy.where((self.corr_time <= t) & (self.corr_time >= t-1))
             corroded = [(corroded[0][i], corroded[1][i], corroded[2][i]) for i in range(len(corroded[0]))]
+            if corroded:
+                print(t)
+                print(corroded[0])
+                test = corroded[0]
+                print(self.corr_time[test[0], test[1], test[2]])
             for pos in corroded:
                 for dir in directions:
                     i = pos[1] + dir[0]
-                    j = pos[2] + dir[1] if self.pylon_shape == 'Slab' else (pos[2] + dir[1]) % len(self.cl_thresh[0,0,0])-1
-                    if 0 <= i < len(self.cl_thresh[0, 0]) and 0 <= j < len(self.cl_thresh[0, 0, 0]) and self.corr_time[pos[0], i, j] > t:
-                        self.cl_thresh[pos[0], i, j] = self.cl_thresh[pos[0], i, j] + self.halo_effect
+                    j = pos[2] + dir[1] if self.pylon_shape == 'Slab' else (pos[2] + dir[1]) % len(self.cl_thresh[0,0])-1
+                    if 0 <= i < len(self.cl_thresh[0]) and 0 <= j < len(self.cl_thresh[0, 0]) and self.corr_time[pos[0], i, j] > t:
+                        self.cl_thresh[pos[0], i, j] += self.halo_effect
             self.corr_time = self.generate_corrosion_matrix()
 
 

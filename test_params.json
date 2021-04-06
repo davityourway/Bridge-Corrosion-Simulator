@@ -38,7 +38,7 @@
   "crack_rate": 0.05,
   "crack_diff": 0.002,
   "pylons": 12,
-  "simulation_time": 100,
-  "halo_effect": 2.3
+  "simulation_time": 150,
+  "halo_effect": 10.3
 }
 
