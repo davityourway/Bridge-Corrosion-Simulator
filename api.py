@@ -64,13 +64,14 @@ class Bridge:
         full_mat = full_mat + float(params[param]["mean"])
         if param == 'diff':
             self.apply_diff_boost(params, full_mat)
-            self.distribute_cracks(params, full_mat)
+            full_mat = self.distribute_cracks(params, full_mat)
         full_mat = self.truncate_values(params, param, full_mat)
         return full_mat
 
     def distribute_cracks(self, params, diff_mat: numpy.array):
         crackmat = numpy.random.random(self.mat_shape)
         diff_mat = numpy.where(crackmat > params['crack_rate'], diff_mat, diff_mat + params['crack_diff'])
+        return diff_mat
 
     def apply_diff_boost(self, params: Dict, diff_mat: numpy.array):
         if params['shape'] == 'Rectangle':
@@ -127,11 +128,11 @@ class Bridge:
         for t in range(1, self.sim_time):
             corroded = numpy.where((self.corr_time <= t) & (self.corr_time >= t-1))
             corroded = [(corroded[0][i], corroded[1][i], corroded[2][i]) for i in range(len(corroded[0]))]
-            if corroded:
-                print(t)
-                print(corroded[0])
-                test = corroded[0]
-                print(self.corr_time[test[0], test[1], test[2]])
+            # if corroded:
+            #     print(t)
+            #     print(corroded[0])
+            #     test = corroded[0]
+            #     print(self.corr_time[test[0], test[1], test[2]])
             for pos in corroded:
                 for dir in directions:
                     i = pos[1] + dir[0]
