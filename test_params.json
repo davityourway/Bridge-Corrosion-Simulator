@@ -6,7 +6,7 @@
     "trunc_high": 10
   },
   "diff": {
-    "mean": 0.005,
+    "mean": 0.01,
     "stdev": 0.002,
     "trunc_low": 0.002,
     "trunc_high": 0.1
@@ -39,6 +39,7 @@
   "crack_diff": 0.002,
   "pylons": 12,
   "simulation_time": 150,
-  "halo_effect": 10.3
+  "halo_effect": 2.6,
+  "curing_rate" : 0.001
 }
 

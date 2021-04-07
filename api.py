@@ -3,6 +3,7 @@ import math
 import numpy
 import itertools
 import pandas as pd
+import copy
 import matplotlib.pyplot as plt
 from typing import Dict, Tuple
 from scipy import special
@@ -35,6 +36,7 @@ class Bridge:
     def __init__(self, params: Dict):
         self.pylon_shape = params['shape']
         self.mat_shape = self.get_matrix_shape(params)
+        self.num_elems = self.mat_shape[0] * self.mat_shape[1] * self.mat_shape[2]
         self.cover = self.populate_matrix(params, 'cover')
         self.diff = self.populate_matrix(params, 'diff')
         self.cl_thresh = self.populate_matrix(params, 'cl_thresh')
@@ -44,8 +46,9 @@ class Bridge:
         self.corr_time = self.generate_corrosion_matrix()
         self.sim_time = int(params['simulation_time']) + 1
         self.halo_effect = params['halo_effect']
+        self.curing_rate = params['curing_rate']
         self.needs_maintenance = [False for _ in range(self.mat_shape[0])]
-        # self.apply_halo_effect()
+        self.optional_effects(True, True)
 
     def generate_corrosion_matrix(self):
         if self.nitrite_conc == 0:
@@ -114,35 +117,56 @@ class Bridge:
             times.append(i)
         return corroded, times
 
-    def plot_corroded(self):
+    def plot_corroded_without_halo(self):
         corroded, time = self.get_corroded_sections(self.sim_time)
-        plt.plot(time, corroded)
+        percent_corroded = [(cored/self.num_elems)*100 for cored in corroded]
+        plt.plot(percent_corroded)
         plt.xlabel('Time (years)')
-        plt.ylabel('Number of elements showing spalls')
+        plt.ylabel('Percentage of elements showing spalls')
         plt.show()
 
-    def apply_halo_effect(self):
+    def plot_corroded_with_halo(self):
+        self.apply_halo_effect()
+        corroded, time = self.get_corroded_sections(self.sim_time)
+        percent_corroded = [(cored/self.num_elems)*100 for cored in corroded]
+        plt.plot(percent_corroded)
+        plt.xlabel('Time (years)')
+        plt.ylabel('Percentage of elements showing spalls')
+        plt.show()
+
+    def apply_halo_effect(self, t: int):
         directions = [-1, 0, 1]
         directions = set(itertools.product(directions, directions))
         directions.remove((0, 0))
-        for t in range(1, self.sim_time):
-            corroded = numpy.where((self.corr_time <= t) & (self.corr_time >= t-1))
-            corroded = [(corroded[0][i], corroded[1][i], corroded[2][i]) for i in range(len(corroded[0]))]
-            # if corroded:
-            #     print(t)
-            #     print(corroded[0])
-            #     test = corroded[0]
-            #     print(self.corr_time[test[0], test[1], test[2]])
-            for pos in corroded:
-                for dir in directions:
-                    i = pos[1] + dir[0]
-                    j = pos[2] + dir[1] if self.pylon_shape == 'Slab' else (pos[2] + dir[1]) % len(self.cl_thresh[0,0])-1
-                    if 0 <= i < len(self.cl_thresh[0]) and 0 <= j < len(self.cl_thresh[0, 0]) and self.corr_time[pos[0], i, j] > t:
-                        self.cl_thresh[pos[0], i, j] += self.halo_effect
+        corroded = numpy.where((self.corr_time <= t) & (self.corr_time >= t-1))
+        corroded = [(corroded[0][i], corroded[1][i], corroded[2][i]) for i in range(len(corroded[0]))]
+        for pos in corroded:
+            for dir in directions:
+                i = pos[1] + dir[0]
+                j = pos[2] + dir[1] if self.pylon_shape == 'Slab' else (pos[2] + dir[1]) % self.mat_shape[2]
+                if 0 <= i < self.mat_shape[1] and 0 <= j < self.mat_shape[2] and self.corr_time[pos[0], i, j] > t:
+                    self.cl_thresh[pos[0], i, j] += self.halo_effect
+
+    def apply_curing_effect(self, original_diff: numpy.array, t: int):
+        return numpy.where(self.corr_time > t, (self.diff*(t-1) + original_diff*(1-self.curing_rate)**t)/t, self.diff)
+
+
+    def optional_effects(self, apply_curing: bool, apply_halo: bool):
+        original_diff = copy.deepcopy(self.diff)
+        for t in range(1, self.sim_time+1):
+            if apply_curing:
+                self.diff = self.apply_curing_effect(original_diff, t)
+            if apply_halo:
+                self.apply_halo_effect(t)
             self.corr_time = self.generate_corrosion_matrix()
+
+
+
+
+
 
 
 if __name__ == '__main__':
     test_bridge = run_simulation("test_params.json")
-    test_bridge.plot_corroded()
+    test_bridge.plot_corroded_without_halo()
     print(test_bridge.corr_time.shape)
