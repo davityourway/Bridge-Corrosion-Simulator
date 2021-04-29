@@ -35,10 +35,14 @@ def run_simulation(params_json: str) -> 'Bridge':
 class Bridge:
     def __init__(self, params: Dict):
         self.pylon_shape = params['shape']
+        self.apply_curing = params['apply_curing']
+        self.apply_halo = params['apply_halo']
+        self.concrete_aging_t0 = params['concrete_aging_t0']
+        self.concrete_aging_factor = params['concrete_aging_factor']
         self.mat_shape = self.get_matrix_shape(params)
         self.num_elems = self.mat_shape[0] * self.mat_shape[1] * self.mat_shape[2]
         self.cover = self.populate_matrix(params, 'cover')
-        self.diff = self.populate_matrix(params, 'diff')
+        self.diff = self.populate_matrix(params, 'diff') if not self.apply_curing else self.populate_matrix(params, 'curing_diff')
         self.cl_thresh = self.populate_matrix(params, 'cl_thresh')
         self.cl_conc = self.populate_matrix(params, 'cl_conc')
         self.prop_time = self.populate_matrix(params, 'prop_time')
@@ -46,9 +50,11 @@ class Bridge:
         self.corr_time = self.generate_corrosion_matrix()
         self.sim_time = int(params['simulation_time']) + 1
         self.halo_effect = params['halo_effect']
+        self.concrete_resistivity = params['concrete_resistivity']
+        self.chl_thresh_multiplier = 3-math.log(self.concrete_resistivity)
         self.curing_rate = params['curing_rate']
         self.needs_maintenance = [False for _ in range(self.mat_shape[0])]
-        self.optional_effects(True, True)
+        self.run_sim_with_optional_effects(self.apply_curing, self.apply_halo)
 
     def generate_corrosion_matrix(self):
         if self.nitrite_conc == 0:
@@ -145,13 +151,18 @@ class Bridge:
                 i = pos[1] + dir[0]
                 j = pos[2] + dir[1] if self.pylon_shape == 'Slab' else (pos[2] + dir[1]) % self.mat_shape[2]
                 if 0 <= i < self.mat_shape[1] and 0 <= j < self.mat_shape[2] and self.corr_time[pos[0], i, j] > t:
-                    self.cl_thresh[pos[0], i, j] += self.halo_effect
+                    self.cl_thresh[pos[0], i, j] *= self.chl_thresh_multiplier
+
+
+        """Assign a CT multiplier M = (3-log10(rho/(kohm-cm)) to not-yet active elements surrounding an active element.
+         (Thus M= 3 for 1 khom-cm, 2 for 10, and 1 (no effect ) for 100 kohm-cm.)  
+        We can refine later to distinguish between NSEW and NE NW SE SW surroundings if it becomes worthwhile. """
 
     def apply_curing_effect(self, original_diff: numpy.array, t: int):
-        return numpy.where(self.corr_time > t, (self.diff*(t-1) + original_diff*(1-self.curing_rate)**t)/t, self.diff)
+        return numpy.where(self.corr_time > t, original_diff*(t/self.concrete_aging_t0)**self.concrete_aging_factor, self.diff)
 
 
-    def optional_effects(self, apply_curing: bool, apply_halo: bool):
+    def run_sim_with_optional_effects(self, apply_curing: bool, apply_halo: bool):
         original_diff = copy.deepcopy(self.diff)
         for t in range(1, self.sim_time+1):
             if apply_curing:
