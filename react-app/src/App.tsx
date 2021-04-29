@@ -25,6 +25,7 @@ const App = () => {
             <h2>Bridge Corrosion Simulator</h2>
             <small>By using this, you agree to not sue us about your bridge.</small>
         </header>
+        <br/>
         <Form onSubmit={handleSubmit(onSubmit)} register={register}/>
         <br/>
         {result[0] && <Chart data={data}/>}
