@@ -8,7 +8,8 @@ interface FormProps {
 
 enum PylonShape {
     RECTANGLE = 'Rectangle',
-    CIRCLE = 'Circle'
+    CIRCLE = 'Circle',
+    SLAB = 'Slab'
 }
 
 export const Form: React.FC<FormProps> = props => {
@@ -26,6 +27,7 @@ export const Form: React.FC<FormProps> = props => {
                 }}>
                     <option value={PylonShape.CIRCLE}>{PylonShape.CIRCLE}</option>
                     <option value={PylonShape.RECTANGLE}>{PylonShape.RECTANGLE}</option>
+                    <option value={PylonShape.SLAB}>{PylonShape.SLAB}</option>
                 </select></td>
             </tr>
             {pylonShape === PylonShape.CIRCLE &&
@@ -35,7 +37,11 @@ export const Form: React.FC<FormProps> = props => {
                 <Input label={"Width (in.)"} fieldName={"width1"} register={props.register}/>
                 <Input label={"Length (in.)"} fieldName={"width2"} register={props.register}/>
             </>}
+            {pylonShape === PylonShape.SLAB && <>
+                <Input label={"Width (in.)"} fieldName={"width1"} register={props.register}/>
+            </>}
             <Input label={"Nitrite concentration"} fieldName={"nitrite_conc"} register={props.register}/>
+            <Input label={"Apply curing"} inputType={'checkbox'} fieldName={"apply_curing"} register={props.register}/>
             <tr>
                 <td/>
                 <td>Mean</td>

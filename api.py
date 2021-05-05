@@ -1,15 +1,15 @@
+import copy
+import itertools
 import json
 import math
-import numpy
-import itertools
-import pandas as pd
-import copy
-import matplotlib.pyplot as plt
 from typing import Dict, Tuple
-from scipy import special
+
+import matplotlib.pyplot as plt
+import numpy
 from flask import Flask
-from flask_cors import CORS
 from flask import request
+from flask_cors import CORS
+from scipy import special
 
 # TO DO
 # Corrosion chartp
@@ -105,6 +105,9 @@ class Bridge:
             hor_elem = int(2 * (float(params['width1']) + float(params['width2'])))
         elif params['shape'] == 'Circle':
             hor_elem = int(2 * math.pi * float(params['radius']))
+        elif params['shape'] == 'Slab':
+            # we're ignoring 'width2'
+            hor_elem = int(params['width1'])
         else:
             print("Error: Shape not valid")
             raise
