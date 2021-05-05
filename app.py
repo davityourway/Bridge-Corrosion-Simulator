@@ -10,15 +10,16 @@ import matplotlib.pyplot as plt
 import numpy
 from flask import Flask
 from flask import request
+from flask_cors import CORS
 from scipy import special
 
 # TO DO
 # Get Sagues charts
 # bench test number of possible elements (Begun)
 # include time readout (begun)
-
 app = Flask(__name__, static_folder='build/', static_url_path='/')
 app.debug = 'DEBUG' in os.environ
+CORS(app)
 
 
 @app.route('/api/corrode', methods=['POST'])
