@@ -2,7 +2,16 @@ import copy
 import itertools
 import json
 import math
+import numpy
+import itertools
+import pandas as pd
+import copy
+import time
+import timeit
+import matplotlib.pyplot as plt
 from typing import Dict, Tuple
+from scipy import special
+from flask import Flask, request
 
 import matplotlib.pyplot as plt
 import numpy
@@ -12,9 +21,10 @@ from flask_cors import CORS
 from scipy import special
 
 # TO DO
-# Corrosion chartp
-# Maintenance Flag
-# Time step
+# Get Sagues charts
+# bench test number of possible elements (Begun)
+# include time readout (begun)
+
 app = Flask(__name__)
 CORS(app)
 
@@ -154,11 +164,6 @@ class Bridge:
                 if 0 <= i < self.mat_shape[1] and 0 <= j < self.mat_shape[2] and self.corr_time[pos[0], i, j] > t:
                     self.cl_thresh[pos[0], i, j] *= self.chl_thresh_multiplier
 
-
-        """Assign a CT multiplier M = (3-log10(rho/(kohm-cm)) to not-yet active elements surrounding an active element.
-         (Thus M= 3 for 1 khom-cm, 2 for 10, and 1 (no effect ) for 100 kohm-cm.)  
-        We can refine later to distinguish between NSEW and NE NW SE SW surroundings if it becomes worthwhile. """
-
     def apply_curing_effect(self, original_diff: numpy.array, t: int):
         return numpy.where(self.corr_time > t, original_diff*(t/self.concrete_aging_t0)**self.concrete_aging_factor, self.diff)
 
@@ -171,6 +176,7 @@ class Bridge:
             if apply_halo:
                 self.apply_halo_effect(t)
             self.corr_time = self.generate_corrosion_matrix()
+            print(f"Hi I'm in year {t}")
 
 
 
@@ -180,5 +186,4 @@ class Bridge:
 
 if __name__ == '__main__':
     test_bridge = run_simulation("test_params.json")
-    test_bridge.plot_corroded_without_halo()
-    print(test_bridge.corr_time.shape)
+    print(timeit.Timer("run_simulation('test_params.json')", 'from __main__ import run_simulation').timeit(1))
