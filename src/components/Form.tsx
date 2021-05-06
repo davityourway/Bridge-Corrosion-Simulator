@@ -19,7 +19,6 @@ export const Form: React.FC<FormProps> = props => {
             <tbody>
             <Input fieldName={"simulation_time"} label={"Simulation time (years)"} register={props.register}/>
             <Input fieldName={"pylons"} label={"Number of pylons"} register={props.register}/>
-            <Input fieldName={"height"} label={"Corrosion zone height (ft.)"} register={props.register}/>
             <tr>
                 <td><label>Pylon shape: </label></td>
                 <td><select name={"shape"} value={pylonShape} ref={props.register} onChange={event => {
@@ -33,13 +32,14 @@ export const Form: React.FC<FormProps> = props => {
             {pylonShape === PylonShape.CIRCLE &&
             <Input fieldName={"radius"} label={"Radius (ft.)"} register={props.register}/>
             }
-            {pylonShape === PylonShape.RECTANGLE && <>
+            {pylonShape === PylonShape.RECTANGLE || pylonShape === PylonShape.SLAB && <>
                 <Input label={"Width (ft.)"} fieldName={"width1"} register={props.register}/>
                 <Input label={"Length (ft.)"} fieldName={"width2"} register={props.register}/>
             </>}
-            {pylonShape === PylonShape.SLAB && <>
-                <Input label={"Width (ft.)"} fieldName={"width1"} register={props.register}/>
-            </>}
+            {
+                pylonShape !== PylonShape.SLAB &&
+                <Input fieldName={"height"} label={"Corrosion zone height (ft.)"} register={props.register}/>
+            }
             <Input label={"Nitrite concentration"} fieldName={"nitrite_conc"} register={props.register}/>
             <Input label={"Apply curing"} inputType={'checkbox'} fieldName={"apply_curing"} register={props.register}/>
             <tr>
