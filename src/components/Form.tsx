@@ -32,7 +32,7 @@ export const Form: React.FC<FormProps> = props => {
             {pylonShape === PylonShape.CIRCLE &&
             <Input fieldName={"radius"} label={"Radius (ft.)"} register={props.register}/>
             }
-            {pylonShape === PylonShape.RECTANGLE || pylonShape === PylonShape.SLAB && <>
+            {(pylonShape === PylonShape.RECTANGLE || pylonShape === PylonShape.SLAB) && <>
                 <Input label={"Width (ft.)"} fieldName={"width1"} register={props.register}/>
                 <Input label={"Length (ft.)"} fieldName={"width2"} register={props.register}/>
             </>}
