@@ -41,7 +41,7 @@ const App = () => {
         <br/>
         <Form onSubmit={handleSubmit(onSubmit)} register={register}/>
         <br/>
-        {result[0] && <Chart data={data}/>}
+        {result[0][0] && <Chart data={data}/>}
     </main>;
 };
 
