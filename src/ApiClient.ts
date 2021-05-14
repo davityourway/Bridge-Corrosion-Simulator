@@ -1,5 +1,5 @@
 export const doFetch = async (path: string, body?: any) => {
-    const response = await fetch(`http://localhost:5000/api${path}`, ({
+    const response = await fetch(`/api${path}`, ({
         body: body ? JSON.stringify(body) : undefined,
         credentials: 'same-origin',
         headers: {
@@ -9,7 +9,7 @@ export const doFetch = async (path: string, body?: any) => {
     }));
     if (!response.ok) {
         const responseBody = await response.json();
-        console.log(responseBody);
+        console.error('Error:', responseBody);
     }
     return response.json();
 };
