@@ -40,7 +40,7 @@ export const Form: React.FC<FormProps> = props => {
             {pylonShape === PylonShape.SLAB && <>
                 <Input label={"Width (ft.)"} fieldName={"width1"} register={props.register}/>
             </>}
-            <Input label={"Nitrite concentration"} fieldName={"nitrite_conc"} register={props.register}/>
+            <Input label={"Nitrite concentration (lbs/yd^3)"} fieldName={"nitrite_conc"} register={props.register}/>
             <Input label={"Apply curing"} inputType={'checkbox'} fieldName={"apply_curing"} register={props.register}/>
             <tr>
                 <td/>
@@ -49,10 +49,10 @@ export const Form: React.FC<FormProps> = props => {
                 <td>Lower Bound</td>
                 <td>Upper Bound</td>
             </tr>
-            <PropertyInput label={"Cover"} fieldName={"cover"} register={props.register}/>
-            <PropertyInput label={"Diffusivity"} fieldName={"diff"} register={props.register}/>
-            <PropertyInput label={"CL threshold concentration"} fieldName={"cl_thresh"} register={props.register}/>
-            <PropertyInput label={"CL surface concentration"} fieldName={"cl_conc"} register={props.register}/>
+            <PropertyInput label={"Cover (in.)"} fieldName={"cover"} register={props.register}/>
+            <PropertyInput label={"Diffusivity (in^2/yr)"} fieldName={"diff"} register={props.register}/>
+            <PropertyInput label={"CL threshold (lbs/yd^3)"} fieldName={"cl_thresh"} register={props.register}/>
+            <PropertyInput label={"CL surface concentration (lbs/yd^3)"} fieldName={"cl_conc"} register={props.register}/>
             <PropertyInput label={"Propagation time (years)"} fieldName={"prop_time"} register={props.register}/>
             </tbody>
         </table>

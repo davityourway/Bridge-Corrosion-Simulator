@@ -164,7 +164,7 @@ class Bridge:
                 if 0 <= i < self.mat_shape[1] and 0 <= j < self.mat_shape[2] and self.corr_time[pos[0], i, j] > t:
                     self.cl_thresh[pos[0], i, j] *= self.chl_thresh_multiplier
 
-    def apply_curing_effect(self, original_diff: numpy.array, t: int):
+    def apply_curing_effect(self, original_diff: numpy.array, t: float):
         return numpy.where(self.corr_time > t, original_diff*(t/self.concrete_aging_t0)**self.concrete_aging_factor, self.diff)
 
 
@@ -172,6 +172,8 @@ class Bridge:
         original_diff = copy.deepcopy(self.diff)
         for t in range(1, self.sim_time+1):
             if apply_curing:
+                # for i in range(3):
+                #     self.diff = self.apply_curing_effect(original_diff, t+i*.25)
                 self.diff = self.apply_curing_effect(original_diff, t)
             if apply_halo:
                 self.apply_halo_effect(t)
@@ -186,4 +188,5 @@ class Bridge:
 
 if __name__ == '__main__':
     test_bridge = run_simulation("test_params.json")
-    print(timeit.Timer("run_simulation('test_params.json')", 'from __main__ import run_simulation').timeit(1))
+    test_bridge.plot_corroded_without_halo()
+    # print(timeit.Timer("run_simulation('test_params.json')", 'from __main__ import run_simulation').timeit(1))
