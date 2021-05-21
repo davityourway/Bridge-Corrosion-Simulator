@@ -18,10 +18,11 @@ interface InputProps {
     label: string;
     fieldName: string;
     register: any;
-    inputType?: string
 }
 
+export const InputLabel = (props: { label: string }) => <td><label>{props.label}: </label></td>;
+
 export const Input: React.FC<InputProps> = props => <tr>
-    <td><label>{props.label}: </label></td>
-    <td><input name={props.fieldName} ref={props.register} type={props.inputType ?? ''}/></td>
+    <InputLabel label={props.label}/>
+    <td><input name={props.fieldName} ref={props.register}/></td>
 </tr>

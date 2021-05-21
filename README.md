@@ -3,7 +3,7 @@
 ## Running instructions
 
 1. [Setup venv](https://docs.python.org/3/library/venv.html)
-1. `export FLASK_APP=api.py`
+1. `export FLASK_APP=app.py`
 1. `flask run`
 1. `cd react-app`
 1. `npm start`

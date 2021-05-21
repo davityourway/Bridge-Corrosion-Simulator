@@ -3,7 +3,6 @@ import itertools
 import json
 import math
 import os
-import timeit
 from typing import Dict, Tuple
 
 import matplotlib.pyplot as plt
@@ -171,7 +170,7 @@ class Bridge:
             if apply_halo:
                 self.apply_halo_effect(t)
             self.corr_time = self.generate_corrosion_matrix()
-            print(f"Hi I'm in year {t}")
+            # print(f"Hi I'm in year {t}")
 
 
 @app.route('/')
