@@ -6,6 +6,7 @@ import {defaults} from "../resources/test_params";
 
 interface FormProps {
     setResult: Dispatch<SetStateAction<any>>
+    setLoading: Dispatch<SetStateAction<boolean>>
 }
 
 enum PylonShape {
@@ -18,25 +19,31 @@ export const Form: React.FC<FormProps> = props => {
     const [pylonShape, setShape] = useState<PylonShape>(PylonShape.CIRCLE);
     const [applyCuring, setApplyCuring] = useState(true);
     const {handleSubmit, register, setValue} = useForm();
-    const onSubmit = async (data: any) => props.setResult(await doFetch('/corrode', {
-        corner_diff_boost: 0.003,
-        circle_diff_boost: 0.8,
-        crack_rate: 0.05,
-        crack_diff: 0.002,
-        halo_effect: 2.6,
-        curing_rate: 0.001,
-        concrete_resistivity: 10,
-        concrete_aging_factor: 0.3,
-        concrete_aging_t0: 10,
-        apply_halo: true,
-        curing_diff: {
-            mean: 0.01,
-            stdev: 0.002,
-            trunc_low: 0.002,
-            trunc_high: 0.1
-        },
-        ...data
-    }))
+    const onSubmit = async (data: any) => {
+        props.setLoading(true);
+        doFetch('/corrode', {
+            corner_diff_boost: 0.003,
+            circle_diff_boost: 0.8,
+            crack_rate: 0.05,
+            crack_diff: 0.002,
+            halo_effect: 2.6,
+            curing_rate: 0.001,
+            concrete_resistivity: 10,
+            concrete_aging_factor: 0.3,
+            concrete_aging_t0: 10,
+            apply_halo: true,
+            curing_diff: {
+                mean: 0.01,
+                stdev: 0.002,
+                trunc_low: 0.002,
+                trunc_high: 0.1
+            },
+            ...data
+        }).then(result => {
+            props.setResult(result);
+            props.setLoading(false)
+        });
+    }
     const populateDefaultValues = async () => {
         await setShape(defaults.shape as PylonShape)
         await setValue('shape', PylonShape.SLAB)
