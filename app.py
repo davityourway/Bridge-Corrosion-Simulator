@@ -3,6 +3,7 @@ import itertools
 import json
 import math
 import os
+import pydantic
 from typing import Dict, Tuple
 
 import matplotlib.pyplot as plt
@@ -34,6 +35,8 @@ def run_simulation(params_json: str) -> 'Bridge':
     return Bridge(params)
 
 
+
+
 class Bridge:
     def __init__(self, params: Dict):
         self.pylon_shape = params['shape']
@@ -55,7 +58,6 @@ class Bridge:
         self.halo_effect = params['halo_effect']
         self.concrete_resistivity = params['concrete_resistivity']
         self.chl_thresh_multiplier = 3 - math.log(self.concrete_resistivity)
-        self.curing_rate = params['curing_rate']
         self.needs_maintenance = [False for _ in range(self.mat_shape[0])]
         self.run_sim_with_optional_effects(self.apply_curing, self.apply_halo)
 
@@ -126,7 +128,7 @@ class Bridge:
             times.append(i)
         return corroded, times
 
-    def plot_corroded_without_halo(self):
+    def plot_percentage_corroded(self):
         corroded, time = self.get_corroded_sections(self.sim_time)
         percent_corroded = [(cored / self.num_elems) * 100 for cored in corroded]
         plt.plot(percent_corroded)
@@ -134,14 +136,6 @@ class Bridge:
         plt.ylabel('Percentage of elements showing spalls')
         plt.show()
 
-    def plot_corroded_with_halo(self):
-        self.apply_halo_effect()
-        corroded, time = self.get_corroded_sections(self.sim_time)
-        percent_corroded = [(cored / self.num_elems) * 100 for cored in corroded]
-        plt.plot(percent_corroded)
-        plt.xlabel('Time (years)')
-        plt.ylabel('Percentage of elements showing spalls')
-        plt.show()
 
     def apply_halo_effect(self, t: int):
         directions = [-1, 0, 1]
@@ -170,7 +164,7 @@ class Bridge:
             if apply_halo:
                 self.apply_halo_effect(t)
             self.corr_time = self.generate_corrosion_matrix()
-            # print(f"Hi I'm in year {t}")
+            print(f"Hi I'm in year {t}")
 
 
 @app.route('/')
@@ -185,5 +179,5 @@ def static_file(path):
 
 if __name__ == '__main__':
     test_bridge = run_simulation("test_params.json")
-    test_bridge.plot_corroded_without_halo()
+    test_bridge.plot_percentage_corroded()
     # print(timeit.Timer("run_simulation('test_params.json')", 'from __main__ import run_simulation').timeit(1))
